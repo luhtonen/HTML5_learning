@@ -2,9 +2,48 @@
 	background: #9c9;
 	padding: 5px;
 }
-/* Define the 3D perspective view and dimension of each card. */
+
 .card {
 	-webkit-perspective: 600;
 	width: 80px;
 	height: 120px;
+	margin: 8px;
+}
+
+.face {
+	border-radius: 10px;
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	
+	-webkit-transition: all .3s;
+	
+	-webkit-backface-visibility: hidden;
+}
+
+.front {
+	background: #966;
+	z-index: 10;
+}
+
+.back {
+	background: #eaa;
+	-webkit-transform: rotate3d(0,1,0,-180deg);
+	z-index: 8;
+}
+.card-flipped .front {
+	-webkit-transform: rotate3d(0,1,0,180deg);
+	z-index: 8;
+}
+.card-flipped .back {
+	-webkit-transform: rotate3d(0,1,0,0deg);
+	z-index: 10;
+}
+
+.cardAK {
+	background: url(../images/AK.png);
+}
+
+.cardAQ {
+	background: url(../images/AQ.png);
 }

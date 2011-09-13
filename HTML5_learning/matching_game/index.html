@@ -2,32 +2,43 @@
 <html lang=en>
 <head>
 	<meta charset=utf-8>
-	<title>Getting Familiar with CSS3 Transition</title>
-	<link rel="stylesheet" href="css/css3transition.css" />
+	<title>Matching Card Game</title>
+	<link rel="stylesheet" href="css/css3flip.css" />
 </head>
 <body>
 	<header>
-		<h1>Getting Familiar with CSS3 Transition</h1>
+		<h1>Matching Card Game</h1>
 	</header>
 	
 	<section id="game">
 		<div id="cards">
-			<div id="card1" class="card cardAK"></div>
-			<div id="card2" class="card cardAQ"></div>
+			<div class="card">
+				<div class="face front"></div>
+				<div class="face back cardAK"></div>
+			</div> <!-- .card -->
+			<div class="card">
+				<div class="face front"></div>
+				<div class="face back cardAQ"></div>
+			</div> <!-- .card -->
 		</div> <!-- #cards -->
 	</section> <!-- #game -->
 	
 	<footer>
-		<p>This is an example of transitioning cards.</p>
+		<p>This is an example of flipping cards with CSS3.</p>
+		<p>Click on the card to flip.</p>
 	</footer>
 
 <script src="js/jquery-1.6.3.min.js"></script>
 <script>
-// every code inside $(function(){}) will be run 
-// after the DOM is loaded and ready.
 $(function(){
-	$("#card1").addClass("moveAndScale");
-	$("#card2").addClass("rotateRight");
+	$("#cards").children().each(function(index) {
+		// listen the click event on each card DIV element.
+		$(this).click(function() {
+			// add the class "card-flipped".
+			// the browser will animate the styles between current state and card-flipped state.
+			$(this).toggleClass("card-flipped");
+		});
+	});
 });
 </script>
 </body>
