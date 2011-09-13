@@ -1,0 +1,52 @@
+/*!
+ * CSS3 Card Games Example
+ * http://gamedesign.cc/html5games/css3-basic-transition/
+ * 
+ * This is an example game for the book HTML5 Games Development: A Beginning Guide.
+ * 
+ * Copyright 2010, Thomas Mak Seng Hin
+ * makzan@gmail.com
+ *   
+ * All Right Reserved.
+ */
+ 
+body {
+	background: #aaa;
+}
+
+.card {
+	width: 80px;
+	height: 120px;
+	margin: 20px;
+	background: #efefef;
+	position: absolute;
+	
+	-webkit-transition: all 1s linear;	
+}
+
+/* define the face graphics of the card deck*/
+/* the card follows a naming convention to represent each playing card */
+/* cardAA stands for Spade A */
+/* cardA10 stands for Spade 10 */
+/* cardAK stands for Spade K */
+/* cardB_ stands for Heart _ */
+/* cardC_ stands for Club _ */
+/* cardD_ stands for Diamond _ */
+
+.cardAK {
+	background: url(../images/AK.png);
+}
+
+.cardAQ {
+	background: url(../images/AQ.png);
+}
+
+
+/* Transformation style */
+.rotateRight {
+	-webkit-transform: rotate3d(0,0,1,90deg);
+}
+
+.moveAndScale {
+	-webkit-transform: translate3d(150px,150px,0) scale3d(1.5, 1.5, 1);
+}
