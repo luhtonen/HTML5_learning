@@ -1,0 +1,10 @@
+#game {
+	background: #9c9;
+	padding: 5px;
+}
+/* Define the 3D perspective view and dimension of each card. */
+.card {
+	-webkit-perspective: 600;
+	width: 80px;
+	height: 120px;
+}
