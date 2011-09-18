@@ -1,0 +1,9 @@
+body {
+	font-family: 'Droid Serif', arial, serif;
+}
+canvas {
+	background: #333;
+}
+#game {
+	position: relative;
+}
