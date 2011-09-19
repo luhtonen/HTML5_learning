@@ -52,12 +52,12 @@ untangleGame.levels = [
   },
   {
 	  "level" : 2,
-	  "circles" : [{"x" : 92,  "y" : 85},
-	               {"x" : 253, "y" : 13},
-	               {"x" : 393, "y" : 86},
-	               {"x" : 390, "y" : 214},
-	               {"x" : 248, "y" : 275},
-	               {"x" : 95,  "y" : 216}],
+	  "circles" : [{"x" : 192, "y" : 155},
+	               {"x" : 353, "y" : 109},
+	               {"x" : 493, "y" : 156},
+	               {"x" : 490, "y" : 236},
+	               {"x" : 348, "y" : 276},
+	               {"x" : 195, "y" : 228}],
 	  "relationship" : {
 		  "0" : {"connectedPoints" : [2,3,4]},
 		  "1" : {"connectedPoints" : [3,5]},
@@ -118,6 +118,31 @@ $(function() {
 	var canvas = document.getElementById("game");
 	var ctx = canvas.getContext("2d");
 	
+	// draw a splash screen when loading the game background
+	// draw gradients background	
+	var bg_gradient = ctx.createLinearGradient(0,0,0,ctx.canvas.height);
+	bg_gradient.addColorStop(0, "#cccccc");
+	bg_gradient.addColorStop(1, "#efefef");
+	ctx.fillStyle = bg_gradient;
+	ctx.fillRect(0,0,ctx.canvas.width,ctx.canvas.height);
+	
+	// draw the loading text
+	ctx.font = "34px 'Rock Salt'";
+	ctx.textAlign = "center";
+	ctx.fillStyle = "#333333";
+	ctx.fillText("loading...",ctx.canvas.width/2,ctx.canvas.height/2);
+	
+	// load the background image
+	untangleGame.background = new Image();
+	untangleGame.background.onload = function() {
+		// setup an interval to loop the game loop
+		setInterval(gameloop, 30);
+	};
+	untangleGame.background.onerror = function() {
+		console.log("Error loading the image.");
+	};
+	untangleGame.background.src = "images/board.png";
+	
 	setupCurrentLevel();
 	updateLevelProgress();
 	
@@ -161,9 +186,6 @@ $(function() {
 		// on every mouse up check if the untangle puzzle is solved.
 		checkLevelCompleteness();
 	});
-	
-	// setup an interval to loop the game loop
-	setInterval(gameloop, 30);
 });
 
 function connectCircles() {
@@ -221,24 +243,8 @@ function gameloop() {
 	// clear the canvas before re-drawing.
 	clear(ctx);
 	
-	var bg_gradient = ctx.createLinearGradient(0,0,0,ctx.canvas.height);
-	bg_gradient.addColorStop(0, "#000000");
-	bg_gradient.addColorStop(1, "#555555");
-	ctx.fillStyle = bg_gradient;
-	ctx.fillRect(0,0,ctx.canvas.width,ctx.canvas.height);
-	
-	// draw the title text
-	ctx.font = "26px 'Rock Salt'";
-	ctx.textAlign = "center";
-	ctx.fillStyle = "#ffffff";
-	ctx.fillText("Untangle Game", ctx.canvas.width/2, 50);
-	
-	// draw the level progress text
-	ctx.textAlign = "left";
-	ctx.textBaseline = "buttom";
-	ctx.fillStyle = "#ffffff";
-	ctx.fillText("Puzzle " + untangleGame.currentLevel + ", Completeness: "
-			+ untangleGame.progressPercentage + "%", 20, ctx.canvas.height-5);
+	// draw the image background
+	ctx.drawImage(untangleGame.background, 0, 0);
 	
 	// draw all remembered line
 	for (var i=0;i<untangleGame.lines.length;i++) {
@@ -254,6 +260,19 @@ function gameloop() {
 		var circle = untangleGame.circles[i];
 		drawCircle(ctx, circle.x, circle.y, circle.radius);
 	}
+	
+	// draw the title text
+	ctx.font = "26px 'Rock Salt'";
+	ctx.textAlign = "center";
+	ctx.fillStyle = "#ffffff";
+	ctx.fillText("Untangle Game", ctx.canvas.width/2, 50);
+	
+	// draw the level progress text
+	ctx.textAlign = "left";
+	ctx.textBaseline = "buttom";
+	ctx.fillStyle = "#ffffff";
+	ctx.fillText("Puzzle " + untangleGame.currentLevel + ", Completeness: "
+			+ untangleGame.progressPercentage + "%", 60, ctx.canvas.height-80);
 }
 
 function isIntersect(line1, line2) {
