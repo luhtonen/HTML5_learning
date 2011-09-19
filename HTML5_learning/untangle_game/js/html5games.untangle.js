@@ -228,7 +228,7 @@ function gameloop() {
 	ctx.fillRect(0,0,ctx.canvas.width,ctx.canvas.height);
 	
 	// draw the title text
-	ctx.font = "26px Arial";
+	ctx.font = "26px 'Rock Salt'";
 	ctx.textAlign = "center";
 	ctx.fillStyle = "#ffffff";
 	ctx.fillText("Untangle Game", ctx.canvas.width/2, 50);
