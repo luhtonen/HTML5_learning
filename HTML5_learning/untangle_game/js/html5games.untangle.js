@@ -265,7 +265,7 @@ function gameloop() {
 	ctx.font = "26px 'Rock Salt'";
 	ctx.textAlign = "center";
 	ctx.fillStyle = "#ffffff";
-	ctx.fillText("Untangle Game", ctx.canvas.width/2, 50);
+//	ctx.fillText("Untangle Game", ctx.canvas.width/2, 50);
 	
 	// draw the level progress text
 	ctx.textAlign = "left";
