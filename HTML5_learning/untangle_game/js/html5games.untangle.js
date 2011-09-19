@@ -19,7 +19,8 @@ var untangleGame = {
 	thinLineThickness: 1,
 	boldLineThickness: 5,
 	lines: [],
-	currentLevel: 0
+	currentLevel: 0,
+	progressPercentage: 0
 };
 
 untangleGame.levels = [
@@ -98,10 +99,18 @@ function drawLine(ctx, x1, y1, x2, y2, thickness) {
 }
 
 function drawCircle(ctx, x, y, radius) {
-	ctx.fillStyle = "rgba(200, 200, 100, .9)";
+	// prepare the radial gradients fill style
+	var circle_gradient = ctx.createRadialGradient(x-3,y-3,1,x,y,radius);
+	circle_gradient.addColorStop(0, "#fff");
+	circle_gradient.addColorStop(1, "#cc0");
+	ctx.fillStyle = circle_gradient;
+	
+	// draw the path
 	ctx.beginPath();
 	ctx.arc(x, y, radius, 0, Math.PI*2, true);
 	ctx.closePath();
+	
+	// actually fill the circle path
 	ctx.fill();
 }
 
@@ -197,8 +206,8 @@ function updateLevelProgress() {
 			progress++;
 		}
 	}
-	var progressPercentage = Math.floor(progress/untangleGame.lines.length*100);
-	$("#progress").html(progressPercentage);
+	untangleGame.progressPercentage = Math.floor(progress/untangleGame.lines.length*100);
+	$("#progress").html(untangleGame.progressPercentage);
 	
 	// display the current level
 	$("#level").html(untangleGame.currentLevel);
@@ -211,6 +220,25 @@ function gameloop() {
 	
 	// clear the canvas before re-drawing.
 	clear(ctx);
+	
+	var bg_gradient = ctx.createLinearGradient(0,0,0,ctx.canvas.height);
+	bg_gradient.addColorStop(0, "#000000");
+	bg_gradient.addColorStop(1, "#555555");
+	ctx.fillStyle = bg_gradient;
+	ctx.fillRect(0,0,ctx.canvas.width,ctx.canvas.height);
+	
+	// draw the title text
+	ctx.font = "26px Arial";
+	ctx.textAlign = "center";
+	ctx.fillStyle = "#ffffff";
+	ctx.fillText("Untangle Game", ctx.canvas.width/2, 50);
+	
+	// draw the level progress text
+	ctx.textAlign = "left";
+	ctx.textBaseline = "buttom";
+	ctx.fillStyle = "#ffffff";
+	ctx.fillText("Puzzle " + untangleGame.currentLevel + ", Completeness: "
+			+ untangleGame.progressPercentage + "%", 20, ctx.canvas.height-5);
 	
 	// draw all remembered line
 	for (var i=0;i<untangleGame.lines.length;i++) {
