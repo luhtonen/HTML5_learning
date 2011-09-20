@@ -20,7 +20,8 @@ var untangleGame = {
 	boldLineThickness: 5,
 	lines: [],
 	currentLevel: 0,
-	progressPercentage: 0
+	progressPercentage: 0,
+	layers: []
 };
 
 untangleGame.levels = [
@@ -39,7 +40,7 @@ untangleGame.levels = [
   },
   {
 	  "level" : 1,
-	  "circles" : [{"x" : 401, "y" : 73},
+	  "circles" : [{"x" : 415, "y" : 117},
 	               {"x" : 400, "y" : 240},
 	               {"x" : 88,  "y" : 241},
 	               {"x" : 84,  "y" : 72}],
@@ -115,8 +116,22 @@ function drawCircle(ctx, x, y, radius) {
 }
 
 $(function() {
+	// prepare layer 0 (bg)
+	var canvas_bg = document.getElementById("bg");
+	untangleGame.layers[0] = canvas_bg.getContext("2d");
+	
+	// prepare layer 1 (guide)
+	var canvas_guide = document.getElementById("guide");
+	untangleGame.layers[1] = canvas_guide.getContext("2d");
+	
+	// prepare layer 2 (game)
 	var canvas = document.getElementById("game");
 	var ctx = canvas.getContext("2d");
+	untangleGame.layers[2] = ctx;
+	
+	// prepare layer 3 (ui)
+	var canvas_ui = document.getElementById("ui");
+	untangleGame.layers[3] = canvas_ui.getContext("2d");
 	
 	// draw a splash screen when loading the game background
 	// draw gradients background	
@@ -135,6 +150,7 @@ $(function() {
 	// load the background image
 	untangleGame.background = new Image();
 	untangleGame.background.onload = function() {
+		drawLayerBG();
 		// setup an interval to loop the game loop
 		setInterval(gameloop, 30);
 	};
@@ -143,13 +159,23 @@ $(function() {
 	};
 	untangleGame.background.src = "images/board.png";
 	
+	// load the guide sprite image
+	untangleGame.guide = new Image();
+	untangleGame.guide.src = "images/guide_sprite.png";
+	untangleGame.guide.onload = function() {
+		untangleGame.guideReady = true;
+		
+		// setup timer to switch the display frame of the guide sprite
+		untangleGame.guideFrame = 0;
+		setInterval(guideNextFrame, 500);
+	};
 	setupCurrentLevel();
 	updateLevelProgress();
 	
 	// Add Mouse Event Listener to canvas
 	// we find if the mouse down position is on any circle
 	// and set the circle as target dragging circle.
-	$("#game").mousedown(function(e) {
+	$("#layers").mousedown(function(e) {
 		var canvasPosition = $(this).offset();
 		var mouseX = e.layerX || 0;
 		var mouseY = e.layerY || 0;
@@ -166,7 +192,7 @@ $(function() {
 	});
 	
 	// we move the target dragging circle when the mouse is moving
-	$("#game").mousemove(function(e) {
+	$("#layers").mousemove(function(e) {
 		if (untangleGame.targetCircle != undefined) {
 			var canvasPosition = $(this).offset();
 			var mouseX = e.layerX || 0;
@@ -180,13 +206,107 @@ $(function() {
 	});
 	
 	// We clear the dragging circle data when mouse is up
-	$("#game").mouseup(function(e) {
+	$("#layers").mouseup(function(e) {
 		untangleGame.targetCircle = undefined;
 		
 		// on every mouse up check if the untangle puzzle is solved.
 		checkLevelCompleteness();
 	});
 });
+
+function gameloop() {
+	drawLayerGuide();
+	drawLayerGame();
+	drawLayerUI();
+}
+
+function drawLayerBG() {
+	var ctx = untangleGame.layers[0];
+	
+	clear(ctx);
+	// draw the image background
+	ctx.drawImage(untangleGame.background, 0, 0);
+}
+
+function drawLayerGuide() {
+	var ctx = untangleGame.layers[1];
+	
+	clear(ctx);
+	
+	// draw the guide animation
+	if (untangleGame.guideReady) {
+		// the dimension of each frame is 80x130.
+		var nextFrameX = untangleGame.guideFrame * 80;
+		ctx.drawImage(untangleGame.guide, nextFrameX, 0, 80, 130, 325, 130, 80, 130);
+	}
+	
+	// fade out the guideline after level 0
+	if (untangleGame.currentLevel == 1) {
+		$("#guide").addClass('fadeout');
+	}
+}
+
+function drawLayerGame() {
+	// get the references of the canvas element and the drawing context.
+	var ctx = untangleGame.layers[2];
+	
+	// draw the game state visually
+	// clear the canvas before drawing.
+	clear(ctx);
+	
+	// draw all remembered line
+	for (var i=0;i<untangleGame.lines.length;i++) {
+		var line = untangleGame.lines[i];
+		var startPoint = line.startPoint;
+		var endPoint = line.endPoint;
+		var thickness = line.thickness;
+		drawLine(ctx, startPoint.x, startPoint.y, endPoint.x, endPoint.y, thickness);
+	}
+	
+	// draw all remembered circles
+	for (var i=0;i<untangleGame.circles.length;i++) {
+		var circle = untangleGame.circles[i];
+		drawCircle(ctx, circle.x, circle.y, circle.radius);
+	}
+}
+
+function drawLayerUI() {
+	var ctx = untangleGame.layers[3];
+	
+	clear(ctx);
+	
+	// draw the level progress text
+	ctx.font = "26px 'Rock Salt'";
+	ctx.fillStyle = "#dddddd";
+	ctx.textAlign = "left";
+	ctx.textBaseline = "buttom";
+	ctx.fillText("Puzzle " + untangleGame.currentLevel + ", Completeness: ", 60, ctx.canvas.height-80);
+	ctx.fillText(untangleGame.progressPercentage + "%", 450, ctx.canvas.height-80);
+	
+	// get the circles, check if the ui overlap the game objects
+	var isOverlappedWithCircle = false;
+	for (var i in untangleGame.circles) {
+		var point = untangleGame.circles[i];
+		if(point.y > 310) {
+			isOverlappedWithCircle = true;
+		}
+	}
+	if(isOverlappedWithCircle) {
+		$("#ui").addClass('dim');
+		console.log("dim");
+	} else {
+		$("#ui").removeClass('dim');
+	}
+}
+
+function guideNextFrame() {
+	untangleGame.guideFrame++;
+	// there are only 6 frames (0-5) in the guide animation.
+	// we loop back the frame number to frame 0 after frame 5.
+	if (untangleGame.guideFrame > 5) {
+		untangleGame.guideFrame = 0;
+	}
+}
 
 function connectCircles() {
 	// setup all lines based on the circles relationship
@@ -233,46 +353,6 @@ function updateLevelProgress() {
 	
 	// display the current level
 	$("#level").html(untangleGame.currentLevel);
-}
-
-function gameloop() {
-	// get the references of the canvas element and the drawing context.
-	var canvas = document.getElementById('game');
-	var ctx = canvas.getContext('2d');
-	
-	// clear the canvas before re-drawing.
-	clear(ctx);
-	
-	// draw the image background
-	ctx.drawImage(untangleGame.background, 0, 0);
-	
-	// draw all remembered line
-	for (var i=0;i<untangleGame.lines.length;i++) {
-		var line = untangleGame.lines[i];
-		var startPoint = line.startPoint;
-		var endPoint = line.endPoint;
-		var thickness = line.thickness;
-		drawLine(ctx, startPoint.x, startPoint.y, endPoint.x, endPoint.y, thickness);
-	}
-	
-	// draw all remembered circles
-	for (var i=0;i<untangleGame.circles.length;i++) {
-		var circle = untangleGame.circles[i];
-		drawCircle(ctx, circle.x, circle.y, circle.radius);
-	}
-	
-	// draw the title text
-	ctx.font = "26px 'Rock Salt'";
-	ctx.textAlign = "center";
-	ctx.fillStyle = "#ffffff";
-//	ctx.fillText("Untangle Game", ctx.canvas.width/2, 50);
-	
-	// draw the level progress text
-	ctx.textAlign = "left";
-	ctx.textBaseline = "buttom";
-	ctx.fillStyle = "#ffffff";
-	ctx.fillText("Puzzle " + untangleGame.currentLevel + ", Completeness: "
-			+ untangleGame.progressPercentage + "%", 60, ctx.canvas.height-80);
 }
 
 function isIntersect(line1, line2) {
