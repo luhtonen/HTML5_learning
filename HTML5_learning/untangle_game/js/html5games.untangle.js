@@ -279,7 +279,7 @@ function drawLayerUI() {
 	ctx.font = "26px 'Rock Salt'";
 	ctx.fillStyle = "#dddddd";
 	ctx.textAlign = "left";
-	ctx.textBaseline = "buttom";
+	ctx.textBaseline = "bottom";
 	ctx.fillText("Puzzle " + untangleGame.currentLevel + ", Completeness: ", 60, ctx.canvas.height-80);
 	ctx.fillText(untangleGame.progressPercentage + "%", 450, ctx.canvas.height-80);
 	
@@ -293,7 +293,6 @@ function drawLayerUI() {
 	}
 	if(isOverlappedWithCircle) {
 		$("#ui").addClass('dim');
-		console.log("dim");
 	} else {
 		$("#ui").removeClass('dim');
 	}
