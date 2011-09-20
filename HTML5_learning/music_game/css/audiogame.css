@@ -15,7 +15,12 @@ body {
 	width: 768px;
 	margin: 0 auto;
 }
-
+#game-scene {
+	background: #EFEFEF url(../images/game_bg.jpg);
+}
+#game-canvas, #game-background-canvas {
+	position: absolute;
+}
 .scene {
 	position: absolute;
 	width: 100%;

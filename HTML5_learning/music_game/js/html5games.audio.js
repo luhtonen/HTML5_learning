@@ -23,4 +23,46 @@ $(function(){
 		
 		return false;
 	});
+	drawBackground();
 });
+
+function drawBackground() {
+	// get the reference of the canvas and the context.
+	var game = document.getElementById("game-background-canvas");
+	var ctx = game.getContext('2d');
+	
+	// set the line style of the three vertical lines.
+	ctx.lineWidth = 10;
+	ctx.strokeStyle = "#000";
+	
+	var center = game.width/2;
+	
+	// draw the three lines
+	// the left line is placed 100 pixels on the left of center.
+	ctx.beginPath();
+	ctx.moveTo(center-100, 50);
+	ctx.lineTo(center-100, ctx.canvas.height - 50);
+	ctx.stroke();
+	
+	// the middle line is placed a the center
+	ctx.beginPath();
+	ctx.moveTo(center, 50);
+	ctx.lineTo(center, ctx.canvas.height - 50);
+	ctx.stroke();
+
+	// the right line is placed 100 pixels on the right of center.
+	ctx.beginPath();
+	ctx.moveTo(center+100, 50);
+	ctx.lineTo(center+100, ctx.canvas.height - 50);
+	ctx.stroke();
+	
+	// draw the horizontal line
+	ctx.beginPath();
+	ctx.moveTo(center-150, ctx.canvas.height - 80);
+	ctx.lineTo(center+150, ctx.canvas.height - 80);
+	// reset the line style to 1px width and grey before actually
+	// drawing the horizontal line.
+	ctx.lineWidth = 1;
+	ctx.strokeStyle = "rgba(50, 50, 50, .8)";
+	ctx.stroke();
+}
