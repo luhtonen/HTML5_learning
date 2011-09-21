@@ -65,6 +65,31 @@ $(function(){
 		
 		return false;
 	});
+	
+	// keydown
+	$(document).keydown(function(e) {
+		var line = e.which-73;
+		$('#hit-line-'+line).removeClass('hide');
+		$('#hit-line-'+line).addClass('show');
+		
+		// our target is J(74), K(75), L(76)
+		var hitLine = e.which-70;
+		
+		// check if hit a music note dot
+		for(var i in audiogame.dots) {
+			if(hitLine == audiogame.dots[i].line &&
+					Math.abs(audiogame.dots[i].distance) < 20) {
+				// remove the hit dot from the dots array
+				audiogame.dots.splice(i, 1);
+			}
+		}
+	});
+	$(document).keyup(function(e) {
+		var line = e.which-73;
+		$('#hit-line-'+line).removeClass('show');
+		$('#hit-line-'+line).addClass('hide');
+	});
+	
 	setupLevelData();
 	drawBackground();
 	setInterval(gameloop, 30);
