@@ -17,6 +17,12 @@ body {
 }
 #game-scene {
 	background: #EFEFEF url(../images/game_bg.jpg);
+	top: -440px;
+}
+#game-scene.show-scene {
+	top: 0;
+	-webkit-transition: top .3s linear;
+	-moz-transition: top .3s linear;
 }
 #game-canvas, #game-background-canvas {
 	position: absolute;
