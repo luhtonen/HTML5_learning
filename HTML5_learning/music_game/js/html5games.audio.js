@@ -12,6 +12,8 @@ function Dot(distance, line) {
 // a global object variable to store all game scope variable.
 var audiogame = {};
 
+audiogame.isRecordMode = false;
+
 // an array to store all music notes data.
 audiogame.musicNotes = [];
 
@@ -24,8 +26,18 @@ audiogame.startingTime = 0;
 // reference of the dot image
 audiogame.dotImage = new Image();
 
+audiogame.totalDotsCount = 0;
+audiogame.totalSuccessCount = 0;
+
+// storing the success count of last 5 results.
+audiogame.successCount = 5;
+
 function setupLevelData() {
 	var notes = audiogame.leveldata.split(";");
+	
+	// store the total number of dots
+	audiogame.totalDotsCount = notes.length;
+	
 	for (var i in notes) {
 		var note = notes[i].split(",");
 		var time = parseFloat(note[0]);
@@ -72,15 +84,36 @@ $(function(){
 		$('#hit-line-'+line).removeClass('hide');
 		$('#hit-line-'+line).addClass('show');
 		
-		// our target is J(74), K(75), L(76)
-		var hitLine = e.which-70;
-		
-		// check if hit a music note dot
-		for(var i in audiogame.dots) {
-			if(hitLine == audiogame.dots[i].line &&
-					Math.abs(audiogame.dots[i].distance) < 20) {
-				// remove the hit dot from the dots array
-				audiogame.dots.splice(i, 1);
+		if(audiogame.isRecordMode) {
+			// print the stored music notes data when press ";" (186)
+			if (e.which == 186) {
+				var musicNotesString = "";
+				for (var i in audiogame.musicNotes) {
+					musicNotesString += audiogame.musicNotes[i].time+","+audogame.musicNotes[i].line+";";
+				}
+				console.log(musicNotesString);
+			}
+			
+			var currentTime = parseInt(audiogame.melody.currentTime * 1000) / 1000;
+			var note = new MusicNote(currentTime, e.which-73);
+			audiogame.musicNotes.push(note);
+		} else {
+			// our target is J(74), K(75), L(76)
+			var hitLine = e.which-73;
+			
+			// check if hit a music note dot
+			for(var i in audiogame.dots) {
+				if(hitLine == audiogame.dots[i].line &&
+						Math.abs(audiogame.dots[i].distance) < 20) {
+					// remove the hit dot from the dots array
+					audiogame.dots.splice(i, 1);
+					// increase the success count
+					audiogame.successCount++;
+					// keep only 5 success count max.
+					audiogame.successCount = Math.min(5, audiogame.successCount);
+					// increase the total success count
+					audiogame.totalSuccessCount++;
+				}
 			}
 		}
 	});
@@ -90,7 +123,9 @@ $(function(){
 		$('#hit-line-'+line).addClass('hide');
 	});
 	
-	setupLevelData();
+	if (!audiogame.isRecordMode) {
+		setupLevelData();
+	}
 	drawBackground();
 	setInterval(gameloop, 30);
 });
@@ -154,6 +189,31 @@ function gameloop() {
 	var game = document.getElementById("game-canvas");
 	var ctx = game.getContext("2d");
 	
+	// check missed dots
+	for(var i in audiogame.dots) {
+		if(!audiogame.dots[i].missed &&
+				audiogame.dots[i].distance < -10) {
+			// mark the dot as missed if it is not mark before
+			audiogame.dots[i].missed = true;
+			// reduce the success count
+			audiogame.successCount--;
+			// reset the success count to 0 if it is lower than 0.
+			audiogame.successCount = Math.max(0, audiogame.successCount);
+		}
+		// remove missed dots after moved to the bottom
+		if(audiogame.dots[i].distance < -100) {
+			audiogame.dots.splice(i, 1);
+		}
+	}
+	
+	// calculate the percentage of the success in last 5 music dots
+	var successPercent = audiogame.successCount / 5;
+	
+	// prevent the successPercentto exceed range(fail safe)
+	successPercent = Math.max(0, Math.min(1, successPercent));
+	// change the volume of the melody according to the success percentange
+	audiogame.melody.volume = successPercent;
+
 	// show new dots
 	// if the game is started
 	if (audiogame.startingTime != 0) {
