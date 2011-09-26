@@ -51,6 +51,7 @@ function setupLevelData() {
 $(function(){	
 	// get the references of the audio element.
 	audiogame.melody = document.getElementById("melody");
+	$(audiogame.melody).bind('ended', onMelodyEnded);
 	audiogame.base = document.getElementById("base");
 	audiogame.buttonOverSound = document.getElementById("buttonover");
 	audiogame.buttonOverSound.volume = .3;
@@ -265,4 +266,9 @@ function gameloop() {
 		ctx.drawImage(audiogame.dotImage, -audiogame.dotImage.width/2, -audiogame.dotImage.height/2);
 		ctx.restore();
 	}
+}
+
+function onMelodyEnded() {
+	console.log('song ended');
+	console.log('success percent: ', audiogame.totalSuccessCount / audiogame.totalDotsCount * 100 + '%');
 }
