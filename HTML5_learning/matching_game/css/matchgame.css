@@ -3,6 +3,11 @@ body {
 	text-align: center;
 	background: #a46740 url(../images/bg.jpg);
 	color: #ccc;
+	text-shadow: 0 1px 0 #222;
+}
+h1 {
+	font-weight: bold;
+	text-shadow: 0 2px 0 #222;
 }
 a, a:visited {
 	color: #aea;
@@ -18,6 +23,7 @@ a:hover {
 #game {
 	border-radius: 10px;
 	border: 1px solid #666;
+	-webkit-box-shadow: 0 -1px 0 #999, 0 1px 0 #999, inset 0 1px 6px #000;
 	
 	position: relative;
 	background: #232 url(../images/table.jpg);
@@ -51,9 +57,13 @@ a:hover {
 	width: 100%;
 	height: 100%;
 	position: absolute;
-	-webkit-transition-property: opacity, transform, box-shadow;
+	
+	-moz-transition-property: opacity, -moz-transform, -moz-box-shadow;
+	-moz-transition-duration: .3s;
+	-webkit-transition-property: opacity, -webkit-transform, -webkit-box-shadow;
 	-webkit-transition-duration: .3s;
 	
+	-moz-backface-visibility: hidden;
 	-webkit-backface-visibility: hidden;
 }
 .front {
@@ -62,6 +72,8 @@ a:hover {
 }
 .back {
 	background: #efefef url(../images/deck.png);
+	
+	-moz-transform: rotate3d(0,1,0,-180deg);
 	-webkit-transform: rotate3d(0,1,0,-180deg);
 	z-index: 8;
 }
@@ -69,23 +81,80 @@ a:hover {
 	-webkit-box-shadow: 0 0 10px #aaa;
 }
 .card-flipped .front {
+	-moz-transform: rotate3d(0,1,0,180deg);
 	-webkit-transform: rotate3d(0,1,0,180deg);
 	z-index: 8;
 }
 .card-flipped .back {
+	-moz-transform: rotate3d(0,1,0,0deg);
 	-webkit-transform: rotate3d(0,1,0,0deg);
 	z-index: 10;
 }
 .card-removed {
-	opacity: 10;
+	opacity: 0;
 }
+.cardAJ {background-position: -800px 0;}
 .cardAQ {background-position: -880px 0;}
 .cardAK {background-position: -960px 0;}
-.cardAJ {background-position: -1040px 0;}
+.cardBJ {background-position: -800px -120px;}
 .cardBQ {background-position: -880px -120px;}
 .cardBK {background-position: -960px -120px;}
-.cardBJ {background-position: -1040px -120px;}
+.cardCJ {background-position: -800px -240px;}
 .cardCQ {background-position: -880px -240px;}
 .cardCK {background-position: -960px -240px;}
+.cardDJ {background-position: -800px -360px;}
 .cardDQ {background-position: -880px -360px;}
 .cardDK {background-position: -960px -360px;}
+
+/* Styles for game over popup */
+#popup {
+	font-family: 'Orbitron', serif;
+	font-size: 28px;
+	font-weight: 700;
+	text-shadow: 0px 1px 2px #fff;
+	
+	color: #222;
+	
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	top: 0;
+	left: 0;
+	
+/*	background: rgba(0,0,0,0.5); */
+	
+	display: -webkit-box;
+	-webkit-box-pack: center;
+	-webkit-box-align: center;
+	
+	-webkit-transition: all .5s ease-in;
+}
+#popup h1 {
+	font-weight: 400;
+}
+#popup-box {
+	width: 400px;
+	height: 300px;
+	background: #ccc url(../images/popup_bg.jpg);
+	
+	border-radius: 10px;
+	-webkit-box-shadow: 0 5px 5px #333;
+	
+	display: -webkit-box;
+	-webkit-box-pack: center;
+	-webkit-box-align: center;
+	
+	-webkit-transition: all .5s ease-in;
+}
+#popup-box small {
+	font-size: .6em;
+}
+
+/* Styles to hide the popup box */
+#popup.hide {
+/*	background: rgba(0,0,0,0); */
+	visibility: hidden;
+}
+#popup.hide #popup-box {
+	margin-top: -800px;
+}

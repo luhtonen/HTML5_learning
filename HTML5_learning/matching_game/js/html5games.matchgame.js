@@ -29,8 +29,26 @@ $(function(){
 		// listen the click event on each card DIV element.
 		$(this).click(selectCard);
 	});
+	// reset the elapsed time to 0.
+	matchingGame.elapsedTime = 0;
+	// start the timer
+	matchingGame.timer = setInterval(countTimer, 1000);
 });
 
+function countTimer() {
+	matchingGame.elapsedTime++;
+	
+	// calculate the minutes and seconds from elapsed time
+	var minute = Math.floor(matchingGame.elapsedTime / 60);
+	var second = matchingGame.elapsedTime % 60;
+	
+	// add padding 0 if minute and second is less then 10
+	if (minute < 10) minute = "0" + minute;
+	if (second < 10) second = "0" + second;
+	
+	// display the elapsed time
+	$("#elapsed-time").html(minute+":"+second);
+}
 function shuffle() {
 	return 0.5 - Math.random();
 }
@@ -65,4 +83,20 @@ function isMatchPattern() {
 
 function removeTookCards() {
 	$(".card-removed").remove();
+	
+	// check if all cards are removed and show game over
+	if ($(".card").length == 0) {
+		gameover();
+	}
+}
+
+function gameover() {
+	// stop the timer
+	clearInterval(matchingGame.timer);
+	
+	// set the score in the game over popup
+	$(".score").html($("#elapsed-time").html());
+	
+	// show the game over popup
+	$("#popup").removeClass("hide");
 }
