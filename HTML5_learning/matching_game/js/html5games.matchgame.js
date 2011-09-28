@@ -97,6 +97,23 @@ function gameover() {
 	// set the score in the game over popup
 	$(".score").html($("#elapsed-time").html());
 	
+	// load the saved last score from local storage
+	var lastElapsedTime = localStorage.getItem("last-elapsed-time");
+	
+	// convert the elapsed seconds into minute:second format
+	// calculate the minutes and seconds from elapsed time
+	var minute = Math.floor(lastElapsedTime / 60);
+	var second = lastElapsedTime % 60;
+	// add padding 0 if minute and second is less then 10
+	if (minute < 10) minute = "0" + minute;
+	if (second < 10) second = "0" + second;
+	
+	// display the last elapsed time in game over popup
+	$(".last-score").html(minute+":"+second);
+	
+	// save the score into local storage
+	localStorage.setItem("last-elapsed-time", matchingGame.elapsedTime);
+	
 	// show the game over popup
 	$("#popup").removeClass("hide");
 }
