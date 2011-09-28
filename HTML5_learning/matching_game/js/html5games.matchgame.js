@@ -97,8 +97,16 @@ function gameover() {
 	// set the score in the game over popup
 	$(".score").html($("#elapsed-time").html());
 	
-	// load the saved last score from local storage
-	var lastElapsedTime = localStorage.getItem("last-elapsed-time");
+	// load the saved last score and time from local storage
+	var lastScore = localStorage.getItem("last-score");
+	
+	// check if there is no any saved record
+	lastScoreObj = JSON.parse(lastScore);
+	if (lastScoreObj == null) {
+		// create an empty record if there is no any saved record
+		lastScoreObj = {"savedTime": "no record", "score": 0};
+	}
+	var lastElapsedTime = lastScoreObj.score;
 	
 	// convert the elapsed seconds into minute:second format
 	// calculate the minutes and seconds from elapsed time
@@ -111,8 +119,30 @@ function gameover() {
 	// display the last elapsed time in game over popup
 	$(".last-score").html(minute+":"+second);
 	
+	// display the saved time of last score
+	var savedTime = lastScoreObj.savedTime;
+	$(".saved-time").html(savedTime);
+	
+	// get the current datetime
+	var currentTime = new Date();
+	var month = currentTime.getMonth() + 1;
+	var day = currentTime.getDate();
+	var year = currentTime.getFullYear();
+	var hours = currentTime.getHours();
+	var minutes = currentTime.getMinutes();
+	// add padding 0 to minutes
+	if (minutes < 10) minutes = "0" + minutes;
+	var seconds = currentTime.getSeconds();
+	// add padding 0 to seconds
+	if (seconds < 10) seconds = "0" + seconds;
+	
+	var now = day+"/"+month+"/"+year+" "+hours+":"+minutes+":"+seconds;
+	
+	// construct the object of datetime and game score
+	var obj = { "savedTime": now, "score": matchingGame.elapsedTime};
+	
 	// save the score into local storage
-	localStorage.setItem("last-elapsed-time", matchingGame.elapsedTime);
+	localStorage.setItem("last-score", JSON.stringify(obj));
 	
 	// show the game over popup
 	$("#popup").removeClass("hide");
