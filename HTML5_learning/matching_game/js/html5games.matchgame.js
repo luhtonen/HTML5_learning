@@ -39,12 +39,8 @@ function countTimer() {
 	matchingGame.elapsedTime++;
 	
 	// calculate the minutes and seconds from elapsed time
-	var minute = Math.floor(matchingGame.elapsedTime / 60);
-	var second = matchingGame.elapsedTime % 60;
-	
-	// add padding 0 if minute and second is less then 10
-	if (minute < 10) minute = "0" + minute;
-	if (second < 10) second = "0" + second;
+	var minute = pad(Math.floor(matchingGame.elapsedTime / 60));
+	var second = pad(matchingGame.elapsedTime % 60);
 	
 	// display the elapsed time
 	$("#elapsed-time").html(minute+":"+second);
@@ -108,13 +104,14 @@ function gameover() {
 	}
 	var lastElapsedTime = lastScoreObj.score;
 	
+	if (lastElapsedTime == 0 || matchingGame.elapsedTime < lastElapsedTime) {
+		$(".ribbon").removeClass("hide");
+	}
+	
 	// convert the elapsed seconds into minute:second format
 	// calculate the minutes and seconds from elapsed time
-	var minute = Math.floor(lastElapsedTime / 60);
-	var second = lastElapsedTime % 60;
-	// add padding 0 if minute and second is less then 10
-	if (minute < 10) minute = "0" + minute;
-	if (second < 10) second = "0" + second;
+	var minute = pad(Math.floor(lastElapsedTime / 60));
+	var second = pad(lastElapsedTime % 60);
 	
 	// display the last elapsed time in game over popup
 	$(".last-score").html(minute+":"+second);
@@ -125,18 +122,7 @@ function gameover() {
 	
 	// get the current datetime
 	var currentTime = new Date();
-	var month = currentTime.getMonth() + 1;
-	var day = currentTime.getDate();
-	var year = currentTime.getFullYear();
-	var hours = currentTime.getHours();
-	var minutes = currentTime.getMinutes();
-	// add padding 0 to minutes
-	if (minutes < 10) minutes = "0" + minutes;
-	var seconds = currentTime.getSeconds();
-	// add padding 0 to seconds
-	if (seconds < 10) seconds = "0" + seconds;
-	
-	var now = day+"/"+month+"/"+year+" "+hours+":"+minutes+":"+seconds;
+	var now = dateString(currentTime);
 	
 	// construct the object of datetime and game score
 	var obj = { "savedTime": now, "score": matchingGame.elapsedTime};
@@ -146,4 +132,11 @@ function gameover() {
 	
 	// show the game over popup
 	$("#popup").removeClass("hide");
+}
+
+function dateString(d) {
+	return d.getDate() + "/" + (d.getMonth()+1) + "/" + d.getFullYear() + " " + d.toLocaleTimeString();
+}
+function pad(n){
+	return n<10 ? '0'+n : n;
 }
