@@ -13,6 +13,7 @@ matchingGame.savingObject.removedCards = [];
 matchingGame.savingObject.currentElapsedTime = 0;
 
 $(function(){
+	console.log("shuffling");
 	matchingGame.deck.sort(shuffle);
 	
 	// re-create the saved deck
@@ -100,9 +101,11 @@ function selectCard() {
 }
 
 function checkPattern() {
+	console.log("check pattern");
 	if(isMatchPattern()) {
 		$(".card-flipped").removeClass("card-flipped").addClass("card-removed");
 		$(".card-removed").bind("webkitTransitionEnd",removeTookCards);
+		$(".card-removed").bind("transitionend",removeTookCards);
 	} else {
 		$(".card-flipped").removeClass("card-flipped");
 	}
@@ -116,6 +119,7 @@ function isMatchPattern() {
 }
 
 function removeTookCards() {
+	console.log("remove took card");
 	$(".card-removed").each(function(){
 		matchingGame.savingObject.removedCards.push($(this).data("card-index"));
 		$(this).remove();
@@ -123,6 +127,7 @@ function removeTookCards() {
 	
 	// check if all cards are removed and show game over
 	if ($(".card").length == 0) {
+		console.log("GAMOVER!!!");
 		gameover();
 	}
 }

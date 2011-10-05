@@ -13,6 +13,7 @@ a, a:visited {
 	color: #aea;
 	text-decoration: none;
 	-webkit-transition: all .3s;
+	-moz-transition: all .3s;
 	padding: 5px;
 }
 a:hover {
@@ -24,6 +25,7 @@ a:hover {
 	border-radius: 10px;
 	border: 1px solid #666;
 	-webkit-box-shadow: 0 -1px 0 #999, 0 1px 0 #999, inset 0 1px 6px #000;
+	-moz-box-shadow: 0 -1px 0 #999, 0 1px 0 #999, inset 0 1px 6px #000;
 	
 	position: relative;
 	background: #232 url(../images/table.jpg);
@@ -79,6 +81,7 @@ a:hover {
 }
 .card:hover .face, .card-flipped .face {
 	-webkit-box-shadow: 0 0 10px #aaa;
+	-moz-box-shadow: 0 0 10px #aaa;
 }
 .card-flipped .front {
 	-moz-transform: rotate3d(0,1,0,180deg);
@@ -124,10 +127,14 @@ a:hover {
 /*	background: rgba(0,0,0,0.5); */
 	
 	display: -webkit-box;
+	display: -moz-box;
 	-webkit-box-pack: center;
 	-webkit-box-align: center;
+	-moz-box-pack: center;
+	-moz-box-align: center;
 	
 	-webkit-transition: all .5s ease-in;
+	-moz-transition: all .5s ease-in;
 }
 #popup h1 {
 	font-weight: 400;
@@ -140,12 +147,17 @@ a:hover {
 	
 	border-radius: 10px;
 	-webkit-box-shadow: 0 5px 5px #333;
+	-moz-box-shadow: 0 5px 5px #333;
 	
 	display: -webkit-box;
 	-webkit-box-pack: center;
 	-webkit-box-align: center;
+	display: -moz-box;
+	-moz-box-pack: center;
+	-moz-box-align: center;
 	
 	-webkit-transition: all .5s ease-in;
+	-moz-transition: all .5s ease-in;
 }
 #popup-box small {
 	font-size: .6em;
@@ -179,6 +191,7 @@ a:hover {
 	padding: 6px;
 	z-index: 100;
 	-webkit-box-shadow: 2px 2px 0 rgba(150,120,70,.4);
+	-moz-box-shadow: 2px 2px 0 rgba(150,120,70,.4);
 	border-radius: 0 5px 5px 0;
 	
 	color: #fff;
